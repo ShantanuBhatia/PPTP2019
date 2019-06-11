@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+    // XY camera movement, plus a simple zoom in-zoom out
+    public enum zoomLevels { CLOSEUP, MIDRANGE, WIDE } ;
+    private zoomLevels zoomLevel;
     public float maxSpeed;
     public float acc;
     private List<GameObject> visibleObjects;
-	// Use this for initialization
+    private Camera cam;
+	
 	void Start () {
-        visibleObjects = new List<GameObject>();    
-
+        visibleObjects = new List<GameObject>();
+        cam = GetComponent<Camera>();
     }
 	
 	// Update is called once per frame
@@ -22,8 +26,20 @@ public class CameraController : MonoBehaviour {
 
         if (Input.GetKeyDown("f")) {
             foreach (GameObject ob in visibleObjects) {
-                ob.GetComponent<VisibilityTracker>().getCurrentScreenSector();
+                ob.GetComponent<VisibilityTracker>().DescribeCurrentScreenSector();
             }
+        }
+        else if (Input.GetKeyDown("1"))
+        {
+            zoomToLevel(zoomLevels.CLOSEUP);
+        }
+        else if (Input.GetKeyDown("2"))
+        {
+            zoomToLevel(zoomLevels.MIDRANGE);
+        }
+        else if (Input.GetKeyDown("3"))
+        {
+            zoomToLevel(zoomLevels.WIDE);
         }
     }
 
@@ -57,4 +73,30 @@ public class CameraController : MonoBehaviour {
     public List<GameObject> getAllVisible() {
         return visibleObjects;
     }
+
+    private void zoomToLevel(zoomLevels targetZoomLvl)
+    {
+        zoomLevel = targetZoomLvl;
+        if (targetZoomLvl == zoomLevels.CLOSEUP)
+        {
+            cam.orthographicSize = 8;
+        }
+        if(targetZoomLvl == zoomLevels.MIDRANGE)
+        {
+            cam.orthographicSize = 16;
+        }
+        if (targetZoomLvl == zoomLevels.WIDE)
+        {
+            cam.orthographicSize = 32;
+        }
+
+    }
+
+    // As long as we're not at a wide zoom, observation is allowed.
+    public bool canObserve()
+    {
+        return zoomLevel != zoomLevels.WIDE;
+    }
+
+
 }
