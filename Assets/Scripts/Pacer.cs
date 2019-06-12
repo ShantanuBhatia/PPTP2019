@@ -14,7 +14,7 @@ public class Pacer : MonoBehaviour {
     private direction dir;
     // Use this for initialization
     void Start () {
-        transform.position = new Vector3(startX, transform.position.y, transform.position.z);
+        transform.localPosition = new Vector3(startX, transform.localPosition.y, transform.localPosition.z);
 	}
 	
 	// Update is called once per frame
@@ -23,7 +23,7 @@ public class Pacer : MonoBehaviour {
         if (dir == direction.L_TO_R)
         {
             transform.Translate(new Vector3(xSpeed * Time.deltaTime, 0f, 0f));
-            if (transform.position.x > stopX)
+            if (transform.localPosition.x > stopX)
             {
                 dir = direction.R_TO_L;
             }
@@ -32,7 +32,7 @@ public class Pacer : MonoBehaviour {
         else if (dir == direction.R_TO_L)
         {
             transform.Translate(new Vector3(-xSpeed * Time.deltaTime, 0f, 0f));
-            if (transform.position.x < startX)
+            if (transform.localPosition.x < startX)
             {
                 dir = direction.L_TO_R;
             }

@@ -44,9 +44,21 @@ TagManager:
   - name: env_back
     uniqueID: 3802361583
     locked: 0
-  - name: Entity
-    uniqueID: 4130495143
+  - name: far_building_int
+    uniqueID: 233655819
+    locked: 0
+  - name: far_building_ext
+    uniqueID: 1720871667
     locked: 0
   - name: env_front
     uniqueID: 565099255
+    locked: 0
+  - name: buildings_int
+    uniqueID: 3717340483
+    locked: 0
+  - name: Entity
+    uniqueID: 4130495143
+    locked: 0
+  - name: buildings_ext
+    uniqueID: 852178139
     locked: 0

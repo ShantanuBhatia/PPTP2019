@@ -5,7 +5,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 
     // XY camera movement, plus a simple zoom in-zoom out
-    public enum zoomLevels { CLOSEUP, MIDRANGE, WIDE } ;
+    public enum zoomLevels { CLOSEUP = 5, MIDRANGE = 8, WIDE =16 } ;
+    public float xMin, xMax, yMin, yMax;
     private zoomLevels zoomLevel;
     public float maxSpeed;
     public float acc;
@@ -15,12 +16,15 @@ public class CameraController : MonoBehaviour {
 	void Start () {
         visibleObjects = new List<GameObject>();
         cam = GetComponent<Camera>();
+        zoomLevel = zoomLevels.MIDRANGE;
+        cam.orthographicSize = (int)zoomLevel;
     }
 	
 	// Update is called once per frame
 	void Update () {
         float yTranslation = Mathf.Clamp(Input.GetAxis("Vertical"), -maxSpeed, maxSpeed);
         float xTranslation = Mathf.Clamp(Input.GetAxis("Horizontal"), -maxSpeed, maxSpeed);
+
 
         transform.Translate(xTranslation, yTranslation, 0);
 
@@ -77,18 +81,19 @@ public class CameraController : MonoBehaviour {
     private void zoomToLevel(zoomLevels targetZoomLvl)
     {
         zoomLevel = targetZoomLvl;
-        if (targetZoomLvl == zoomLevels.CLOSEUP)
-        {
-            cam.orthographicSize = 8;
-        }
-        if(targetZoomLvl == zoomLevels.MIDRANGE)
-        {
-            cam.orthographicSize = 16;
-        }
-        if (targetZoomLvl == zoomLevels.WIDE)
-        {
-            cam.orthographicSize = 32;
-        }
+        //if (targetZoomLvl == zoomLevels.CLOSEUP)
+        //{
+        //    cam.orthographicSize = zoomVals;
+        //}
+        //if(targetZoomLvl == zoomLevels.MIDRANGE)
+        //{
+        //    cam.orthographicSize = 16;
+        //}
+        //if (targetZoomLvl == zoomLevels.WIDE)
+        //{
+        //    cam.orthographicSize = 32;
+        //}
+        cam.orthographicSize = (int) targetZoomLvl;
 
     }
 

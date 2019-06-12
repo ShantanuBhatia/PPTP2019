@@ -10,6 +10,8 @@ public class VisibilityTracker : MonoBehaviour {
     public Camera cam;
     private int screenDivisions; // the screen will be divided into an NxN grid with N=screenDivisions
     private float observeThreshold; // how many seconds you have to be watching something before it counts as observing it
+    public bool canBeSpotted; // set true if this character is going to regularly go in and out of vision - for example, someone pacing behind a window.
+    private bool spottedFlag; // becomes true if the character was ever spotted
     private GameController gc;
 
 
@@ -33,37 +35,37 @@ public class VisibilityTracker : MonoBehaviour {
             if (Input.GetKeyDown("g")) {
                 DescribeRelativePositions();
             }
+            checkObserve();
 
 
+            //// Movement mechanic 1: observing objects
+            //Vector2 sector = getCurrentScreenSector();
+            //if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
+            //{
 
-            // Movement mechanic 1: observing objects
-            Vector2 sector = getCurrentScreenSector();
-            if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
-            {
+            //    observeTimer = 0f;
+            //    if(beingObserved)
+            //    {
+            //        DescribeCurrentScreenSector();
+            //        Debug.Log(transform.name + " is no longer being observed");
+            //    }
+            //    beingObserved = false;
 
-                observeTimer = 0f;
-                if(beingObserved)
-                {
-                    DescribeCurrentScreenSector();
-                    Debug.Log(transform.name + " is no longer being observed");
-                }
-                beingObserved = false;
+            //}
+            //else
+            //{
+            //    observeTimer += Time.deltaTime;
+            //}
 
-            }
-            else
-            {
-                observeTimer += Time.deltaTime;
-            }
-
-            if (!beingObserved)
-            {
-                if (observeTimer > observeThreshold && camCon.canObserve())
-                {
-                    beingObserved = true;
-                    Debug.Log(transform.name + " is now being observed");
-                }
-            }
-            //getCurrentScreenSector();
+            //if (!beingObserved)
+            //{
+            //    if (observeTimer > observeThreshold && camCon.canObserve())
+            //    {
+            //        beingObserved = true;
+            //        Debug.Log(transform.name + " is now being observed");
+            //    }
+            //}
+            ////getCurrentScreenSector();
         }
 	}
 
@@ -85,6 +87,39 @@ public class VisibilityTracker : MonoBehaviour {
     // TODO: implement
     float screenSizePercentage() {
         return 0f;
+    }
+
+    private void checkObserve()
+    {
+        // Movement mechanic 1: observing objects
+        Vector2 sector = getCurrentScreenSector();
+        if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
+        {
+
+            observeTimer = 0f;
+            if (beingObserved)
+            {
+                DescribeCurrentScreenSector();
+                Debug.Log(transform.name + " is no longer being observed");
+            }
+            beingObserved = false;
+
+        }
+        else
+        {
+            observeTimer += Time.deltaTime;
+        }
+
+        if (!beingObserved)
+        {
+            if (observeTimer > observeThreshold && camCon.canObserve())
+            {
+                beingObserved = true;
+                canBeSpotted = false;
+                Debug.Log(transform.name + " is now being observed");
+            }
+        }
+        //getCurrentScreenSector();
     }
 
     public Vector2 getCurrentScreenSector() {
@@ -140,4 +175,13 @@ public class VisibilityTracker : MonoBehaviour {
     }
 
 
+    // A character is "spotted" if the player's view is a closeup of an area, and a spottable character enters and exits the players view ALL WITHIN THE PERIPHERY OF THEIR VISION
+    // A character can only be spotted if they have not yet been observed - because a Spot is like spotting something out of the corner of your eye
+    public void checkSpotted()
+    {
+        if (!canBeSpotted && spottedFlag)
+        {
+            //TODO
+        }
+    }
 }

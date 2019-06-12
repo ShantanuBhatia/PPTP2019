@@ -193,7 +193,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 13948658}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.68, y: 0.39, z: 3.2}
+  m_LocalPosition: {x: 14.28, y: 7.19, z: -1.57}
   m_LocalScale: {x: 1, y: 4, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -514,7 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f511037bac2849fdbf0e5dad0cb1601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cmr: {fileID: 0}
+  camera: {fileID: 1156460364}
   speedCoefficient: 0.2
 --- !u!1 &695335824
 GameObject:
@@ -621,7 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f511037bac2849fdbf0e5dad0cb1601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cmr: {fileID: 0}
+  camera: {fileID: 1156460364}
   speedCoefficient: 0.15
 --- !u!1 &878829188
 GameObject:
@@ -728,7 +728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f511037bac2849fdbf0e5dad0cb1601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cmr: {fileID: 0}
+  camera: {fileID: 1156460364}
   speedCoefficient: 0.15
 --- !u!1 &883082767
 GameObject:
@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f511037bac2849fdbf0e5dad0cb1601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cmr: {fileID: 0}
+  camera: {fileID: 1156460364}
   speedCoefficient: 0.15
 --- !u!1 &1906014902
 GameObject:
@@ -1294,5 +1294,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f511037bac2849fdbf0e5dad0cb1601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cmr: {fileID: 0}
+  camera: {fileID: 1156460364}
   speedCoefficient: 0.15
