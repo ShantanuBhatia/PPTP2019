@@ -41,8 +41,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: env_back
+  - name: mountains
     uniqueID: 3802361583
+    locked: 0
+  - name: ground
+    uniqueID: 415429423
+    locked: 0
+  - name: Far Entity
+    uniqueID: 883672931
     locked: 0
   - name: far_building_int
     uniqueID: 233655819
@@ -50,15 +56,27 @@ TagManager:
   - name: far_building_ext
     uniqueID: 1720871667
     locked: 0
+  - name: Trees back
+    uniqueID: 2087085675
+    locked: 0
   - name: env_front
     uniqueID: 565099255
-    locked: 0
-  - name: buildings_int
-    uniqueID: 3717340483
     locked: 0
   - name: Entity
     uniqueID: 4130495143
     locked: 0
+  - name: buildings_int
+    uniqueID: 3717340483
+    locked: 0
   - name: buildings_ext
     uniqueID: 852178139
+    locked: 0
+  - name: Trees front
+    uniqueID: 2016591755
+    locked: 0
+  - name: people front
+    uniqueID: 1558346457
+    locked: 0
+  - name: tree front 2
+    uniqueID: 1763891029
     locked: 0
