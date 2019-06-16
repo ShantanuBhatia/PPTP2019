@@ -16,8 +16,7 @@ public class CameraController : MonoBehaviour {
 	void Start () {
         visibleObjects = new List<GameObject>();
         cam = GetComponent<Camera>();
-        zoomLevel = zoomLevels.MIDRANGE;
-        cam.orthographicSize = (int)zoomLevel;
+        zoomToLevel(zoomLevels.MIDRANGE);
     }
 	
 	// Update is called once per frame
@@ -101,6 +100,11 @@ public class CameraController : MonoBehaviour {
     public bool canObserve()
     {
         return zoomLevel != zoomLevels.WIDE;
+    }
+
+    public bool canSpot()
+    {
+        return (zoomLevel == zoomLevels.CLOSEUP || zoomLevel == zoomLevels.MIDRANGE);
     }
 
 

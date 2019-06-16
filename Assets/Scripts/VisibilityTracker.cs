@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class VisibilityTracker : MonoBehaviour {
     public float currentScreenTime, observeTimer;
+    private enum SpotStage { OFF, ON, BACK_OFF};
+    private SpotStage spotStage;
     public bool visible;
     public bool beingObserved;
-    public CameraController camCon;
-    public Camera cam;
+    private CameraController camCon;
+    private Camera cam;
     private int screenDivisions; // the screen will be divided into an NxN grid with N=screenDivisions
     private float observeThreshold; // how many seconds you have to be watching something before it counts as observing it
     public bool canBeSpotted; // set true if this character is going to regularly go in and out of vision - for example, someone pacing behind a window.
     private bool spottedFlag; // becomes true if the character was ever spotted
+    public bool tempSpotSwitch; // for during testing: Flick this on if you want a character to have Spot enabled. Remove after Spot is implemented.
     private GameController gc;
+    string lastSeenObject;
 
 
-	void Start () {
+    void Start () {
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         screenDivisions = gc.screenDivisions;
         observeThreshold = gc.observeThreshold;
@@ -23,6 +27,8 @@ public class VisibilityTracker : MonoBehaviour {
         beingObserved = false;
         currentScreenTime = 0f;
         observeTimer = 0f;
+        lastSeenObject = "";
+        spotStage = SpotStage.OFF;
         if (camCon == null || cam == null) {
             camCon = GameObject.Find("Main Camera").GetComponent<CameraController>();
             cam = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -30,42 +36,19 @@ public class VisibilityTracker : MonoBehaviour {
 	}
 
 	void Update () {
+
+
         if (visible) {
             currentScreenTime += Time.deltaTime;
             if (Input.GetKeyDown("g")) {
                 DescribeRelativePositions();
             }
+
             checkObserve();
-
-
-            //// Movement mechanic 1: observing objects
-            //Vector2 sector = getCurrentScreenSector();
-            //if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
-            //{
-
-            //    observeTimer = 0f;
-            //    if(beingObserved)
-            //    {
-            //        DescribeCurrentScreenSector();
-            //        Debug.Log(transform.name + " is no longer being observed");
-            //    }
-            //    beingObserved = false;
-
-            //}
-            //else
-            //{
-            //    observeTimer += Time.deltaTime;
-            //}
-
-            //if (!beingObserved)
-            //{
-            //    if (observeTimer > observeThreshold && camCon.canObserve())
-            //    {
-            //        beingObserved = true;
-            //        Debug.Log(transform.name + " is now being observed");
-            //    }
-            //}
-            ////getCurrentScreenSector();
+            if (tempSpotSwitch)
+            {
+                CheckSpotted();
+            }
         }
 	}
 
@@ -115,7 +98,6 @@ public class VisibilityTracker : MonoBehaviour {
             if (observeTimer > observeThreshold && camCon.canObserve())
             {
                 beingObserved = true;
-                canBeSpotted = false;
                 Debug.Log(transform.name + " is now being observed");
             }
         }
@@ -127,34 +109,35 @@ public class VisibilityTracker : MonoBehaviour {
         return screenSector;
     }
 
+    // Not strictly necessary, kept in for if we ever accidentally break it again
     public void DescribeCurrentScreenSector()
     {
         Vector2 screenSector = getCurrentScreenSector();
         string posDescr = transform.name + " is in " + screenSector;
         //if (screenSector.y.Equals(0))
         //{
-        //    posDescr += "Bottom ";
+        //   posDescr += "Bottom ";
         //}
         //else if (screenSector.y.Equals(1))
         //{
-        //    posDescr += "Middle ";
+        //   posDescr += "Middle ";
         //}
         //else if (screenSector.y.Equals(2))
         //{
-        //    posDescr += "Top ";
+        //   posDescr += "Top ";
         //}
 
         //if (screenSector.x.Equals(0))
         //{
-        //    posDescr += "Left";
+        //   posDescr += "Left";
         //}
         //else if (screenSector.x.Equals(1))
         //{
-        //    posDescr += "Middle";
+        //   posDescr += "Middle";
         //}
         //else if (screenSector.x.Equals(2))
         //{
-        //    posDescr += "Right";
+        //   posDescr += "Right";
         //}
 
         Debug.Log(posDescr);
@@ -175,13 +158,73 @@ public class VisibilityTracker : MonoBehaviour {
     }
 
 
-    // A character is "spotted" if the player's view is a closeup of an area, and a spottable character enters and exits the players view ALL WITHIN THE PERIPHERY OF THEIR VISION
+    // A character is "spotted" if the player's view is a closeup/midshot of an area, and a spottable character enters and exits the players view ALL WITHIN THE PERIPHERY OF THEIR VISION
     // A character can only be spotted if they have not yet been observed - because a Spot is like spotting something out of the corner of your eye
-    public void checkSpotted()
+    //public void checkSpotted()
+    //{
+    //    //if (canBeSpotted && spottedFlag)
+    //    //{
+
+    //    //}
+
+
+
+    //    // Make sure the object is in the periphery of the player view
+
+    //}
+
+    private void CheckSpotted()
     {
-        if (!canBeSpotted && spottedFlag)
+
+        RaycastHit hit;
+        //Debug.Log(ray + ", " + transform.position);
+        Ray objRay = cam.ScreenPointToRay(cam.WorldToScreenPoint(transform.position));
+
+        if (!spottedFlag)
         {
-            //TODO
+            if (camCon.canSpot())
+            {
+                Vector2 sector = getCurrentScreenSector();
+                DescribeCurrentScreenSector();
+                if (sector.x <= 2f || sector.x >= screenDivisions - 2 || sector.y <= 2f || sector.y >= screenDivisions - 2)
+                {
+                    if (Physics.Raycast(objRay, out hit, Mathf.Infinity))
+                    {
+                        Transform objectHit = hit.transform;
+                        Debug.Log(objectHit.name);
+                        if (objectHit.name == transform.name)
+                        {
+                            if (spotStage == SpotStage.OFF)
+                            {
+                                Debug.Log("Hmm, something there!");
+                                spotStage = SpotStage.ON;
+                            }
+
+                        }
+                        else
+                        {
+                            if (spotStage == SpotStage.ON)
+                            {
+                                spottedFlag = true;
+                                Debug.Log("Hey! I think you spotted " + transform.name + " in the corner of your eye!");
+                            }
+                        }
+
+                        // Do something with the object that was hit by the raycast.
+                    }
+                }
+                else
+                {
+                    Debug.Log("NOI IN RANGE!");
+                }
+            }
+
+
+
+            
+
         }
+        
+
     }
 }
