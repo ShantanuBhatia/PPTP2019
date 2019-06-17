@@ -35,6 +35,7 @@ public class VisibilityTracker : MonoBehaviour {
             if (Input.GetKeyDown("g")) {
                 DescribeRelativePositions();
             }
+
             checkObserve();
 
 
