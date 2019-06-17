@@ -261,6 +261,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenDivisions: 4
   observeThreshold: 4.5
+  canMoveCamera: 1
+  verticalScrollLock: 0
+  cam: {fileID: 0}
 --- !u!4 &827642967
 Transform:
   m_ObjectHideFlags: 0
@@ -840,7 +843,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1748203480}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.31, y: 5.82, z: -10}
+  m_LocalPosition: {x: -81, y: 2.6, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -857,9 +860,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a177961799b84bf408f05b216eea5c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xMin: 0
-  xMax: 0
-  yMin: 0
-  yMax: 0
+  xMin: -81
+  xMax: 81
+  yMin: -16
+  yMax: 16
   maxSpeed: 0.3
   acc: 0
+  gc: {fileID: 0}

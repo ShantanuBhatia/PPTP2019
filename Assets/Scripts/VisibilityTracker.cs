@@ -16,7 +16,7 @@ public class VisibilityTracker : MonoBehaviour {
     private bool spottedFlag; // becomes true if the character was ever spotted
     public bool tempSpotSwitch; // for during testing: Flick this on if you want a character to have Spot enabled. Remove after Spot is implemented.
     private GameController gc;
-    string lastSeenObject;
+
 
 
     void Start () {
@@ -27,7 +27,7 @@ public class VisibilityTracker : MonoBehaviour {
         beingObserved = false;
         currentScreenTime = 0f;
         observeTimer = 0f;
-        lastSeenObject = "";
+
         spotStage = SpotStage.OFF;
         if (camCon == null || cam == null) {
             camCon = GameObject.Find("Main Camera").GetComponent<CameraController>();
@@ -175,7 +175,7 @@ public class VisibilityTracker : MonoBehaviour {
 
     private void CheckSpotted()
     {
-
+		//Debug.Log("yeet?");
         RaycastHit hit;
         //Debug.Log(ray + ", " + transform.position);
         Ray objRay = cam.ScreenPointToRay(cam.WorldToScreenPoint(transform.position));
@@ -188,13 +188,16 @@ public class VisibilityTracker : MonoBehaviour {
                 DescribeCurrentScreenSector();
                 if (sector.x <= 2f || sector.x >= screenDivisions - 2 || sector.y <= 2f || sector.y >= screenDivisions - 2)
                 {
-                    if (Physics.Raycast(objRay, out hit, Mathf.Infinity))
+					//Debug.Log("Check1");
+					if (Physics.Raycast(objRay, out hit, Mathf.Infinity))
                     {
-                        Transform objectHit = hit.transform;
+						//Debug.Log("Check2");
+						Transform objectHit = hit.transform;
                         Debug.Log(objectHit.name);
                         if (objectHit.name == transform.name)
                         {
-                            if (spotStage == SpotStage.OFF)
+							//Debug.Log("Check3");
+							if (spotStage == SpotStage.OFF)
                             {
                                 Debug.Log("Hmm, something there!");
                                 spotStage = SpotStage.ON;
