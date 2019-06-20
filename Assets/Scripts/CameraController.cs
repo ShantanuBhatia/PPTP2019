@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 
     // XY camera movement, plus a simple zoom in-zoom out
-    public enum zoomLevels { CLOSEUP = 2, MIDRANGE = 5, WIDE = 8 } ;
+    public enum zoomLevels { CLOSEUP = 10, MIDRANGE = 10, WIDE = 10 } ;
     public float xMin, xMax, yMin, yMax;
     private zoomLevels zoomLevel;
     public float maxSpeed;

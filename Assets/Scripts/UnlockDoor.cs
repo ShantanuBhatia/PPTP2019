@@ -32,7 +32,7 @@ public class UnlockDoor : MonoBehaviour {
                 Debug.Log("Hello");
                 shouldMove = false;
                 gc.ReleaseCameraMovement();
-                gc.UnlockDoor();
+                //gc.UnlockDoor();
             }
         }
 	}

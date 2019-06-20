@@ -41,7 +41,7 @@ public class PickUpKey : MonoBehaviour {
                     manNoKey.SetActive(false);
                     manWithKey.SetActive(true);
                     gameObject.SetActive(false);
-                    gc.keyPickupComplete = true;
+                    //gc.keyPickupComplete = true;
                 }
             }
         }
