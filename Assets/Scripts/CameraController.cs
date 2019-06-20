@@ -111,12 +111,12 @@ public class CameraController : MonoBehaviour {
     // As long as we're not at a wide zoom, observation is allowed.
     public bool canObserve()
     {
-        return zoomLevel != zoomLevels.WIDE;
+		return true;
     }
 
     public bool canSpot()
     {
-        return (zoomLevel == zoomLevels.WIDE || zoomLevel == zoomLevels.MIDRANGE);
+        return true;
     }
 
 

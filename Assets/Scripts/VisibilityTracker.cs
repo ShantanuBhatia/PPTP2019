@@ -3,30 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VisibilityTracker : MonoBehaviour {
-    public float currentScreenTime, observeTimer;
-    private enum SpotStage { OFF, ON, BACK_OFF};
-    private SpotStage spotStage;
+    public float currentScreenTime, observeTimer;   
     public bool visible;
     public bool beingObserved;
-    private CameraController camCon;
-    private Camera cam;
-    private int screenDivisions; // the screen will be divided into an NxN grid with N=screenDivisions
-    private float observeThreshold; // how many seconds you have to be watching something before it counts as observing it
-    private bool spottedFlag; // becomes true if the character was ever spotted
     public bool enableSpot; // set true if this character is going to regularly go in and out of vision - for example, someone pacing behind a window.
 	public bool beingIgnored;
 	public bool enableIgnore;
-    private GameController gc;
+	public bool hasAnimation;
 
+	private Animator anm; 
+	private enum SpotStage { OFF, ON, BACK_OFF };
+	private SpotStage spotStage;
+	private Camera cam;
+	private CameraController camCon;
+	private GameController gc;
+	private int screenDivisions; // the screen will be divided into an NxN grid with N=screenDivisions
+	private float observeThreshold; // how many seconds you have to be watching something before it counts as observing it
+	private bool spottedFlag; // becomes true if the character was ever spotted
 
-
-    void Start () {
+	void Start () {
+		if (hasAnimation)
+		{
+			anm = GetComponent<Animator>();
+		}
+		
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         screenDivisions = gc.screenDivisions;
         observeThreshold = gc.observeThreshold;
         visible = false;
         beingObserved = false;
-		beingIgnored = true;
+		beingIgnored = false;
 
 	currentScreenTime = 0f;
         observeTimer = 0f;
@@ -88,19 +94,24 @@ public class VisibilityTracker : MonoBehaviour {
         Vector2 sector = getCurrentScreenSector();
         if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
         {
-
-            observeTimer = 0f;
+			observeTimer = 0f;
             if (beingObserved)
             {
-                DescribeCurrentScreenSector();
-                Debug.Log(transform.name + " is no longer being observed");
+                //DescribeCurrentScreenSector();
+                //Debug.Log(transform.name + " is no longer being observed");
             }
             beingObserved = false;
+			if (hasAnimation)
+			{
+				anm.SetBool("beingObserved", beingObserved);
+			}
+				
 
         }
         else
         {
             observeTimer += Time.deltaTime;
+			
         }
 
         if (!beingObserved)
@@ -108,8 +119,12 @@ public class VisibilityTracker : MonoBehaviour {
             if (observeTimer > observeThreshold && camCon.canObserve())
             {
                 beingObserved = true;
-                Debug.Log(transform.name + " is now being observed");
-            }
+				if (hasAnimation)
+				{
+					anm.SetBool("beingObserved", beingObserved);
+				}
+				//Debug.Log(transform.name + " is now being observed");
+			}
         }
         //getCurrentScreenSector();
     }
@@ -123,11 +138,11 @@ public class VisibilityTracker : MonoBehaviour {
     public void DescribeCurrentScreenSector()
     {
         Vector2 screenSector = getCurrentScreenSector();
-        string posDescr = transform.name + " is in " + screenSector;
+		string posDescr = transform.name + " is in " + screenSector;
 
 
-        Debug.Log(posDescr);
-    }
+		Debug.Log(posDescr);
+	}
 
     public void DescribeRelativePositions() {
         List<GameObject> objectsOnScreen = camCon.getAllVisible();
@@ -160,7 +175,7 @@ public class VisibilityTracker : MonoBehaviour {
             if (camCon.canSpot())
             {
                 Vector2 sector = getCurrentScreenSector();
-                DescribeCurrentScreenSector();
+                //DescribeCurrentScreenSector();
                 if (sector.x <= 2f || sector.x >= screenDivisions - 2 || sector.y <= 2f || sector.y >= screenDivisions - 2)
                 {
 
@@ -173,7 +188,7 @@ public class VisibilityTracker : MonoBehaviour {
 
 							if (spotStage == SpotStage.OFF)
                             {
-                                Debug.Log("Hmm, something there!");
+                                //Debug.Log("Hmm, something there!");
                                 spotStage = SpotStage.ON;
                             }
 
@@ -183,7 +198,7 @@ public class VisibilityTracker : MonoBehaviour {
                             if (spotStage == SpotStage.ON)
                             {
                                 spottedFlag = true;
-                                Debug.Log("Hey! I think you spotted " + transform.name + " in the corner of your eye!");
+                                //Debug.Log("Hey! I think you spotted " + transform.name + " in the corner of your eye!");
                             }
                         }
 
@@ -191,7 +206,7 @@ public class VisibilityTracker : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("NOI IN RANGE!");
+                    //Debug.Log("NOI IN RANGE!");
                 }
             }
 
@@ -201,7 +216,6 @@ public class VisibilityTracker : MonoBehaviour {
     // if an object is on screen but obscured behind another object, it is being ignored
     private void CheckIgnored()
 	{
-		Debug.Log("Yeet!");
 		RaycastHit hit;
 
 		Ray objRay = cam.ScreenPointToRay(cam.WorldToScreenPoint(transform.position));
@@ -211,13 +225,13 @@ public class VisibilityTracker : MonoBehaviour {
 			Transform objectHit = hit.transform;
 			if (objectHit.name == transform.name)
 			{
-				Debug.Log(transform.name + " is not being ignored");
+				//Debug.Log(transform.name + " is not being ignored");
 				beingIgnored = false;
 
 			}
 			else
 			{
-				Debug.Log(transform.name +  " is being ignored right now! #rude");
+				//Debug.Log(transform.name +  " is being ignored right now! #rude");
 				beingIgnored = true;
 				beingObserved = false;
 			}
