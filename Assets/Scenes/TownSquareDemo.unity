@@ -1055,6 +1055,8 @@ GameObject:
   - component: {fileID: 753473656}
   - component: {fileID: 753473655}
   - component: {fileID: 753473657}
+  - component: {fileID: 753473658}
+  - component: {fileID: 753473659}
   m_Layer: 0
   m_Name: townsperson2
   m_TagString: Untagged
@@ -1115,7 +1117,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 753473654}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.759016, y: -4.73, z: 0}
+  m_LocalPosition: {x: -7.2, y: -4.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1134,6 +1136,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cmr: {fileID: 0}
   speedCoefficient: 0.07
+--- !u!114 &753473658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 753473654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40501e01085e43a98f1ba61e1adf88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &753473659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 753473654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc47f276fdd98c429b1f1c7bb6b6254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentScreenTime: 0
+  observeTimer: 0
+  visible: 0
+  beingObserved: 0
+  enableSpot: 0
+  beingIgnored: 0
+  enableIgnore: 0
+  hasAnimation: 0
 --- !u!1 &992162727
 GameObject:
   m_ObjectHideFlags: 0
@@ -1455,6 +1487,8 @@ GameObject:
   - component: {fileID: 1322920540}
   - component: {fileID: 1322920539}
   - component: {fileID: 1322920541}
+  - component: {fileID: 1322920542}
+  - component: {fileID: 1322920543}
   m_Layer: 0
   m_Name: townsperson1
   m_TagString: Untagged
@@ -1499,7 +1533,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f60e45d5a31284dea877ba114cd4fbe0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 2.38, y: 5.48}
@@ -1515,7 +1549,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1322920538}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 21.12, y: -5.38, z: 0}
+  m_LocalPosition: {x: -10.839014, y: -5.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1534,6 +1568,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cmr: {fileID: 0}
   speedCoefficient: 0.07
+--- !u!114 &1322920542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322920538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40501e01085e43a98f1ba61e1adf88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1322920543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1322920538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc47f276fdd98c429b1f1c7bb6b6254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentScreenTime: 0
+  observeTimer: 0
+  visible: 0
+  beingObserved: 0
+  enableSpot: 0
+  beingIgnored: 0
+  enableIgnore: 0
+  hasAnimation: 0
 --- !u!1 &1465401216
 GameObject:
   m_ObjectHideFlags: 0
