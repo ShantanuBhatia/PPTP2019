@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,7 +45,9 @@ public class VisibilityTracker : MonoBehaviour {
         }
 	}
 
-	void Update () {
+
+
+    void Update () {
 
 
         if (visible) {
@@ -95,11 +98,11 @@ public class VisibilityTracker : MonoBehaviour {
         if (sector.x.Equals(0) || sector.x.Equals(screenDivisions - 1) || sector.y.Equals(0) || sector.y.Equals(screenDivisions - 1) || !camCon.canObserve())
         {
 			observeTimer = 0f;
-            if (beingObserved)
-            {
-                //DescribeCurrentScreenSector();
-                //Debug.Log(transform.name + " is no longer being observed");
-            }
+            //if (beingObserved)
+            //{
+            //    //DescribeCurrentScreenSector();
+            //    //Debug.Log(transform.name + " is no longer being observed");
+            //}
             beingObserved = false;
 			if (hasAnimation)
 			{
@@ -238,4 +241,11 @@ public class VisibilityTracker : MonoBehaviour {
 
 		}
 	}
+
+    public bool checkVisible()
+	{
+		return visible;
+	}
+
+
 }
