@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDiff: 0.8
-  speedMultiplier: 0.5
+  speedMultiplier: 1.5
 --- !u!1 &107778046
 GameObject:
   m_ObjectHideFlags: 0
@@ -752,7 +752,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDiff: 1.75
-  speedMultiplier: 0.2
+  speedMultiplier: 1.5
 --- !u!1 &616722428
 GameObject:
   m_ObjectHideFlags: 0
