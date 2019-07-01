@@ -9,10 +9,11 @@ public class StanBehaviour : MonoBehaviour
     private AttentionSeeking cameraFollower;
     private VisibilityTracker vizTrack;
     private StanStates currentState;
-
+    private Animator anim;
     // Start is called before the first frame update
     void Start()
     {
+        anim = GetComponent<Animator>();
         vizTrack = GetComponent<VisibilityTracker>();
         cameraFollower = GetComponent<AttentionSeeking>();
         currentState = StanStates.INITIAL_SITTING;
@@ -25,6 +26,7 @@ public class StanBehaviour : MonoBehaviour
         if (currentState == StanStates.INITIAL_SITTING && vizTrack.Observed())
         {
             currentState = StanStates.NOTICING_PLAYER;
+            anim.SetBool("ntc", true);
         }
         if (currentState == StanStates.NOTICING_PLAYER)
         {
