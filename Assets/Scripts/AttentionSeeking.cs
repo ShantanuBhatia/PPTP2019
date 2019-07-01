@@ -17,7 +17,9 @@ public class AttentionSeeking : MonoBehaviour {
     public Transform pedestal;
     public VisibilityTracker pedestalVizTrack;
     public float pedestalPosMargin;
-    
+    public float DistFromCenter;
+
+    private bool shouldFollowCamera;
     private Vector2 currentScreenSector;
     private int screenDivisions;
     [SerializeField] private VisibilityTracker vizTrack;
@@ -27,6 +29,7 @@ public class AttentionSeeking : MonoBehaviour {
     [SerializeField] private GameController gc;
 
     void Start () {
+        shouldFollowCamera = false;
         moving = false;
         waitTimeElapsed = 0f;
         cameraObj = GameObject.Find("Main Camera");
@@ -50,60 +53,72 @@ public class AttentionSeeking : MonoBehaviour {
 
 void Update()
     {
-       
-        if (reachedDestination)
+        if (shouldFollowCamera)
         {
-            waitTimeElapsed = 0f;
-        }
+            if (reachedDestination)
+            {
+                waitTimeElapsed = 0f;
+            }
 
-        if (!vizTrack.checkVisible())
-        {
-            reachedDestination = false;
-            waitTimeElapsed += Time.deltaTime;
-        }
-        else
-        {
-            if (pedestalVizTrack.checkVisible() && Mathf.Abs(transform.position.x - pedestal.position.x) > pedestalPosMargin)
+            if (!vizTrack.checkVisible())
             {
                 reachedDestination = false;
                 waitTimeElapsed += Time.deltaTime;
             }
             else
             {
-                currentScreenSector = vizTrack.getCurrentScreenSector();
-                if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
+                if (pedestalVizTrack.checkVisible() && Mathf.Abs(transform.position.x - pedestal.position.x) > pedestalPosMargin)
                 {
                     reachedDestination = false;
                     waitTimeElapsed += Time.deltaTime;
                 }
-
-                else if (currentScreenSector.x > 0 && currentScreenSector.x < (screenDivisions - 1) && currentScreenSector.y > (0) && currentScreenSector.y < (screenDivisions - 1))
+                else
                 {
-                    reachedDestination = true;
+                    currentScreenSector = vizTrack.getCurrentScreenSector();
+                    if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
+                    {
+                        reachedDestination = false;
+                        waitTimeElapsed += Time.deltaTime;
+                    }
 
+                    //else if (currentScreenSector.x > 0 && currentScreenSector.x < (screenDivisions - 1) && currentScreenSector.y > (0) && currentScreenSector.y < (screenDivisions - 1))
+                    else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
+                    {
+                        reachedDestination = true;
+
+                    }
                 }
+
+
             }
 
-            
+
+
+            if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
+            {
+                //if (pedestalVizTrack.checkVisible())
+                //{
+                //    if (pedestal.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
+                //    else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
+                //}
+                //else
+                //{
+                    if (cam.transform.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
+                    else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
+                //}
+
+
+            }
         }
 
-
-
-        if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
-        {
-            if (pedestalVizTrack.checkVisible())
-            {
-                if (pedestal.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
-                else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
-            }
-            else
-            {
-                if (cam.transform.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
-                else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
-            }
-            
-
-        }
 	}
 
+    public void StartFollowingCamera()
+    {
+        shouldFollowCamera = true;
+    }
+    public void StopFollowingCamera()
+    {
+        shouldFollowCamera = false;
+    }
 }

@@ -30,7 +30,7 @@ public class ProclaimerSceneController : MonoBehaviour {
 
 		if (sceneState == SceneState.TOWER_SPOTTED)
         {
-            Debug.Log("Bow down!");
+            //Debug.Log("Bow down!");
         }
         else
         {
@@ -49,6 +49,6 @@ public class ProclaimerSceneController : MonoBehaviour {
             }
         }
 
-        Debug.Log("Current game state is " + sceneState);
+        //Debug.Log("Current game state is " + sceneState);
 	}
 }

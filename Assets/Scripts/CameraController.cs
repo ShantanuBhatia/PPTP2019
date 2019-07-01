@@ -61,7 +61,7 @@ public class CameraController : MonoBehaviour {
         GameObject g = GameObject.Find(newVisObjName);
         if (g) {
             visibleObjects.Add(g);
-            Debug.Log("Can now also see " + newVisObjName);
+            //Debug.Log("Can now also see " + newVisObjName);
             return true;
         }
         return false;
@@ -71,7 +71,7 @@ public class CameraController : MonoBehaviour {
         GameObject g = GameObject.Find(remObjName);
         if (g) {
             visibleObjects.Remove(g);
-            Debug.Log("Object removed. Objects now visible: " + listOfVisible());
+            //Debug.Log("Object removed. Objects now visible: " + listOfVisible());
         }
         return false;
     }

@@ -52,9 +52,13 @@ public class VisibilityTracker : MonoBehaviour {
 
         if (visible) {
             currentScreenTime += Time.deltaTime;
-            if (Input.GetKeyDown("g")) {
-                DescribeRelativePositions();
-            }
+            //if (Input.GetKeyDown("g")) {
+            //    DescribeRelativePositions();
+            //}
+            //if (Input.GetKeyDown("o"))
+            //{
+            //    Debug.Log(transform.name + ", " + getCurrentScreenSector());
+            //}
 			if (!beingIgnored)
 			{
 				checkObserve();
@@ -72,7 +76,7 @@ public class VisibilityTracker : MonoBehaviour {
 	}
 
     void OnBecameInvisible() {
-        Debug.Log(transform.name + " was on screen for " + currentScreenTime + " seconds.");
+        //Debug.Log(transform.name + " was on screen for " + currentScreenTime + " seconds.");
         visible = false;
         currentScreenTime = 0f;
         observeTimer = 0f;
@@ -247,5 +251,8 @@ public class VisibilityTracker : MonoBehaviour {
 		return visible;
 	}
 
-
+    public bool Observed()
+    {
+        return beingObserved;
+    }
 }
