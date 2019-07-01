@@ -22,6 +22,7 @@ public class AttentionSeeking : MonoBehaviour {
     private bool shouldFollowCamera;
     private Vector2 currentScreenSector;
     private int screenDivisions;
+    private Animator anim;
     [SerializeField] private VisibilityTracker vizTrack;
     [SerializeField] private bool moving;
     [SerializeField] private float waitTimeElapsed;
@@ -29,6 +30,7 @@ public class AttentionSeeking : MonoBehaviour {
     [SerializeField] private GameController gc;
 
     void Start () {
+        anim = GetComponent<Animator>();
         shouldFollowCamera = false;
         moving = false;
         waitTimeElapsed = 0f;
@@ -85,7 +87,7 @@ void Update()
                     else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
                     {
                         reachedDestination = true;
-
+                        anim.SetBool("isRunning", false);
                     }
                 }
 
@@ -103,8 +105,15 @@ void Update()
                 //}
                 //else
                 //{
-                    if (cam.transform.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
-                    else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
+                    if (cam.transform.position.x > transform.position.x)
+                    {
+                        transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    }
+                    else
+                    {
+                        transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    }
+                    anim.SetBool("isRunning", true);
                 //}
 
 

@@ -9,11 +9,15 @@ public class Follower : MonoBehaviour
 {
     private enum FollowerStates { NOT_FOLLOWING, CONVERSATION, FOLLOWING, REACHED_DEST };
     private FollowerStates currentState;
+    private ParallaxScrollSideways pxs;
     public GameObject leader;
-    public Vector3 targetPosition;
+    public GameObject amphitheater;
+    public Vector3 endingPosition;
+    public float targetX;
+    public float targetMargin;
     public float maxTalkTime;
     public float leaderConversationDist;
-
+    public float initialParallaxSpeed;
     [SerializeField] private float currentTalkTime;
     [SerializeField] private bool moving;
     [SerializeField] private float waitTimeElapsed;
@@ -24,8 +28,8 @@ public class Follower : MonoBehaviour
     {
         currentState = FollowerStates.NOT_FOLLOWING;
         currentTalkTime = 0f;
-
-
+        pxs = GetComponent<ParallaxScrollSideways>();
+        initialParallaxSpeed = pxs.speedCoefficient;
         gc = GameObject.Find("GameController").GetComponent<GameController>();
 
 
@@ -56,12 +60,18 @@ public class Follower : MonoBehaviour
         } else
         {
             currentTalkTime = 0f;
-            if (currentState == FollowerStates.REACHED_DEST)
-            {
-                transform.position = targetPosition;
-            }
+            
         }
-        
+        if(currentState == FollowerStates.FOLLOWING && Mathf.Abs(transform.position.x - targetX) < targetMargin)
+        {
+            TriggerFollowStop();
+        }
+        if (currentState == FollowerStates.REACHED_DEST)
+        {
+            transform.position = endingPosition;
+            transform.parent = null;
+            pxs.speedCoefficient = initialParallaxSpeed;
+        }
     }
 
     public void TriggerConversation()
@@ -73,11 +83,13 @@ public class Follower : MonoBehaviour
     {
         currentState = FollowerStates.FOLLOWING;
         transform.SetParent(leader.transform);
+        pxs.speedCoefficient = 0f;
     }
 
     public void TriggerFollowStop()
     {
         currentState = FollowerStates.REACHED_DEST;
+        leader.GetComponent<StanBehaviour>().CollectGroup();
     }
 
     public bool EnableConversationLook()
