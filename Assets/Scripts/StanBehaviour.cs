@@ -39,6 +39,11 @@ public class StanBehaviour : MonoBehaviour
                 currentState = StanStates.NOTICING_PLAYER;
                 anim.SetBool("ntc", true);
             }
+            if (Input.GetKeyDown("f"))
+            {
+                currentState = StanStates.NOTICING_PLAYER;
+                anim.SetBool("ntc", true);
+            }
             if (currentState == StanStates.NOTICING_PLAYER)
             {
                 if (Input.GetKeyDown("g"))
