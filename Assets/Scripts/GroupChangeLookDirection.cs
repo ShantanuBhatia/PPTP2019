@@ -7,6 +7,11 @@ using UnityEngine;
  * Like change look direction, but for a whole group of people. It stores each child gameobject's initial x-flip of the Sprite as the default.
  * If any of the sprites are near the edge of the screen, they should all look the other way
  * If they aren't, then there is no flip and they keep looking in their initial directions.
+ * 
+ * Update this to be more lenient. 
+ * Make a public variable for how many edge sectors count as needing conversation.
+ * 
+ * Then, go into Stan's movement script and set it so that when he's in the right state, he will try and run to the closest unconvinced townsperson
  */
 public class GroupChangeLookDirection : MonoBehaviour
 {

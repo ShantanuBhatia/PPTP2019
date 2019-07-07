@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - stanSprites
+  - townie
   layers:
   - Default
   - TransparentFX

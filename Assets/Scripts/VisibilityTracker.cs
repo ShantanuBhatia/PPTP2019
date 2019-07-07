@@ -55,11 +55,11 @@ public class VisibilityTracker : MonoBehaviour {
             //if (Input.GetKeyDown("g")) {
             //    DescribeRelativePositions();
             //}
-            //if (Input.GetKeyDown("o"))
-            //{
-            //    Debug.Log(transform.name + ", " + getCurrentScreenSector());
-            //}
-			if (!beingIgnored)
+            if (Input.GetKeyDown("o"))
+            {
+                Debug.Log(transform.name + ", " + getCurrentScreenSector());
+            }
+            if (!beingIgnored)
 			{
 				checkObserve();
 			}
