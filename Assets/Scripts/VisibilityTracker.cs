@@ -10,9 +10,7 @@ public class VisibilityTracker : MonoBehaviour {
     public bool enableSpot; // set true if this character is going to regularly go in and out of vision - for example, someone pacing behind a window.
 	public bool beingIgnored;
 	public bool enableIgnore;
-	public bool hasAnimation;
 
-	private Animator anm; 
 	private enum SpotStage { OFF, ON, BACK_OFF };
 	private SpotStage spotStage;
 	private Camera cam;
@@ -23,10 +21,7 @@ public class VisibilityTracker : MonoBehaviour {
 	private bool spottedFlag; // becomes true if the character was ever spotted
 
 	void Start () {
-		if (hasAnimation)
-		{
-			anm = GetComponent<Animator>();
-		}
+
 		
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         screenDivisions = gc.screenDivisions;
@@ -108,10 +103,6 @@ public class VisibilityTracker : MonoBehaviour {
             //    //Debug.Log(transform.name + " is no longer being observed");
             //}
             beingObserved = false;
-			if (hasAnimation)
-			{
-				anm.SetBool("beingObserved", beingObserved);
-			}
 				
 
         }
@@ -126,10 +117,7 @@ public class VisibilityTracker : MonoBehaviour {
             if (observeTimer > observeThreshold && camCon.canObserve())
             {
                 beingObserved = true;
-				if (hasAnimation)
-				{
-					anm.SetBool("beingObserved", beingObserved);
-				}
+
 				//Debug.Log(transform.name + " is now being observed");
 			}
         }
