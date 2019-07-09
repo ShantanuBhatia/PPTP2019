@@ -5,97 +5,83 @@ using UnityEngine;
 public class TownspersonController : MonoBehaviour
 {
 
-    //Look in the specified direction unless you're all the way up in that direction, in which case, look the other way.
 
-    /*
-     * If I'm flipped because I'm at the edge of the screen, I'm willing to converse with Stan
-    */
     
    
     [SerializeField] private State state;
     private Direction lookDirection;
-
+    private Transform cam;
     private VisibilityTracker vizTrack;
     private GameController gc;
     private enum Visibility { VISIBLE, NOT_VISIBLE };
     private Animator anim;
     private Visibility myViz;
-
+    private GameObject head;
     private float stanConversationCount;
-
+    private Vector3 lookRightScale, lookLeftScale;
     public int edgeSectorCount;
-    public enum State { TALKING_TO_TOWNIE, SOLO_IGNORING_STAN, WILLING_TO_CONVERSE };
+    public enum State { SOLO_IGNORING_STAN, WILLING_TO_CONVERSE };
     public enum Direction { LEFT, RIGHT };
     public GameObject stan;
     public float conviction;
     public float convictionSecondsNeeded;
+    public string spriteHeadTag;
 
     private void Awake()
     {
+        cam = GameObject.Find("Main Camera").transform;
         anim = GetComponent<Animator>();
-        vizTrack = GetComponent<VisibilityTracker>();
+        foreach(Transform child in transform)
+        {
+            if (child.tag == spriteHeadTag)
+            {
+                head = child.gameObject;
+                vizTrack = head.GetComponent<VisibilityTracker>();
+                break;
+            }
+        }
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         // TEMP
-        state = State.TALKING_TO_TOWNIE;
+        state = State.SOLO_IGNORING_STAN;
         conviction = 0;
         Debug.Log("???");
+        lookRightScale = transform.localScale;
+        lookLeftScale = new Vector3(-lookRightScale.x, lookRightScale.y, lookRightScale.z);
     }
 
-    // Start is called before the first frame update
+
     void Start()
     {
         Debug.Log("Townsperson, activate!");
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         SetVisiblity();
         SetTalkingState();
         OutputTalkingState();
-        
-
-        //if (state == State.SOLO_IGNORING_STAN)
-        //{
-        //    LookAwayFromStan();
-        //}
-        //else if (state == State.TALKING_TO_TOWNIE)
-        //{
-        //    FaceClosestTownie();
-        //}
-
+        SetLookDirection();
+        ChangeCharacterFacingDirection();
         SetAnimationFlags();
     }
 
-    private void LookAwayFromStan()
+    private void SetLookDirection()
     {
-        lookDirection = transform.position.x > stan.transform.position.x ? Direction.RIGHT : Direction.LEFT;
-    }
-
-    private void FaceClosestTownie()
-    {
-        // Find the nearest townsperson
-        GameObject[] townies = GameObject.FindGameObjectsWithTag("townie");
-        GameObject closestTownie = townies[0];
-        float minDist = Mathf.Abs(transform.position.x - closestTownie.transform.position.x);
-        foreach (GameObject townie in townies)
+        if (state == State.SOLO_IGNORING_STAN)
         {
-            if (Mathf.Abs(transform.position.x - townie.transform.position.x) < minDist)
-            {
-                closestTownie = townie;
-                minDist = Mathf.Abs(transform.position.x - townie.transform.position.x);
-            }
-
+            lookDirection = transform.position.x > stan.transform.position.x ? Direction.RIGHT : Direction.LEFT;
         }
-
-        // Turn to face this townsperson
-        lookDirection = transform.position.x < closestTownie.transform.position.x ? Direction.RIGHT : Direction.LEFT;
+        else if (state == State.WILLING_TO_CONVERSE)
+        {
+            lookDirection = cam.position.x > transform.position.x ? Direction.RIGHT : Direction.LEFT;
+        }
     }
 
 
     private void SetVisiblity()
     {
-        bool viz = vizTrack.Observed();
+        bool viz = vizTrack.visible;
         myViz = viz ? Visibility.VISIBLE : Visibility.NOT_VISIBLE;
     }
 
@@ -104,20 +90,19 @@ public class TownspersonController : MonoBehaviour
     {
         float myScreenSector = vizTrack.getCurrentScreenSector().x;
         float sectors = gc.screenDivisions;
-
         if (myScreenSector < edgeSectorCount || sectors - myScreenSector <= edgeSectorCount)
         {
             state = State.WILLING_TO_CONVERSE;
         }
         else
         {
-            state = State.TALKING_TO_TOWNIE;
+            state = State.SOLO_IGNORING_STAN;
         }
 
     }
     private void SetAnimationFlags()
     {
-        if (state == State.TALKING_TO_TOWNIE)
+        if (state == State.SOLO_IGNORING_STAN)
         {
             anim.SetBool("TalkToStan", false);
         }
@@ -129,16 +114,21 @@ public class TownspersonController : MonoBehaviour
 
     private void OutputTalkingState()
     {
-        if (state == State.TALKING_TO_TOWNIE)
+        if (state == State.SOLO_IGNORING_STAN)
         {
-            Debug.Log("I'm talkig to another townsperson");
+            Debug.Log("I'm ignoring you lalalala");
         }
         else
         {
             Debug.Log("I'm at an edge and willing to talk");
         }
+        Debug.Log("Look direction: " + lookDirection);
     }
-
+    
+    private void ChangeCharacterFacingDirection()
+    {
+        transform.localScale = lookDirection == Direction.LEFT ? lookLeftScale : lookRightScale;
+    }
 
 }
 

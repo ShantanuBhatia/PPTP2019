@@ -6,21 +6,34 @@ public class StanBehaviour : MonoBehaviour
 {
     public enum StanStates { INITIAL_SITTING, NOTICING_PLAYER, GATHERING_TOWNIES, PROCLAIMING };
     public int groupCount;
+    public string spriteHeadTag;
 
     [SerializeField] private int collectedGroups;
-    private AttentionSeeking cameraFollower;
+    public AttentionSeeking cameraFollower;
     private VisibilityTracker vizTrack;
     private StanStates currentState;
     private Animator anim;
     private Vector3 proclaimingSpot;
+    private Vector3 positionLastFrame;
     // Start is called before the first frame update
     void Start()
     {
+        foreach (Transform child in transform)
+        {
+            if (child.tag == spriteHeadTag)
+            {
+                vizTrack = child.gameObject.GetComponent<VisibilityTracker>();
+                break;
+            }
+        }
+
+
+        positionLastFrame = transform.position;
         proclaimingSpot = GameObject.Find("ProclaimFromHere").transform.position;
         collectedGroups = 0;
         anim = GetComponent<Animator>();
-        vizTrack = GetComponent<VisibilityTracker>();
-        cameraFollower = GetComponent<AttentionSeeking>();
+        
+        //cameraFollower = GetComponent<AttentionSeeking>();
         currentState = StanStates.INITIAL_SITTING;
     }
 
@@ -36,22 +49,13 @@ public class StanBehaviour : MonoBehaviour
             Debug.Log("Current observation state: " + vizTrack.Observed() + ", current state: " + currentState);
             if (currentState == StanStates.INITIAL_SITTING && vizTrack.Observed())
             {
-                currentState = StanStates.NOTICING_PLAYER;
-                anim.SetBool("ntc", true);
+                currentState = StanStates.GATHERING_TOWNIES;
+                //anim.SetBool("ntc", true);
+                //anim.SetBool("isRunning", false);
+                cameraFollower.StartFollowingCamera();
             }
-            if (Input.GetKeyDown("f"))
-            {
-                currentState = StanStates.NOTICING_PLAYER;
-                anim.SetBool("ntc", true);
-            }
-            if (currentState == StanStates.NOTICING_PLAYER)
-            {
-                if (Input.GetKeyDown("g"))
-                {
-                    currentState = StanStates.GATHERING_TOWNIES;
-                    cameraFollower.StartFollowingCamera();
-                }
-            }
+
+
             if (currentState == StanStates.GATHERING_TOWNIES)
             {
                 if (Input.GetKeyDown(","))
@@ -65,8 +69,10 @@ public class StanBehaviour : MonoBehaviour
         {
             Debug.Log("PROCLAIM! ETC");
             transform.position = proclaimingSpot;
-            anim.SetBool("beingObserved", true);
+            //anim.SetBool("beingObserved", true);
         }
+
+        setAnimationFlags();
 
     }
 
@@ -74,5 +80,27 @@ public class StanBehaviour : MonoBehaviour
     {
         Debug.Log("I got one!");
         collectedGroups++;
+    }
+
+    public void setAnimationFlags()
+    {
+        if (currentState == StanStates.INITIAL_SITTING)
+        {
+            anim.SetBool("ntc", false);
+        }
+        else if (currentState == StanStates.GATHERING_TOWNIES)
+        {
+            anim.SetBool("ntc", true);
+            anim.SetBool("isRunning", false);
+        }
+        Vector3 currentPosition = transform.position;
+        if (currentPosition != positionLastFrame)
+        {
+            anim.SetBool("isRunning", true);
+        } else
+        {
+            anim.SetBool("isRunning", false);
+        }
+        positionLastFrame = transform.position;
     }
 }

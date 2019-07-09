@@ -18,8 +18,10 @@ public class AttentionSeeking : MonoBehaviour {
     public VisibilityTracker pedestalVizTrack;
     public float pedestalPosMargin;
     public float DistFromCenter;
+    public string spriteHeadTag;
 
-    private bool shouldFollowCamera;
+    private GameObject stan;
+    [SerializeField] private bool shouldFollowCamera;
     private Vector2 currentScreenSector;
     private int screenDivisions;
     private Animator anim;
@@ -30,7 +32,18 @@ public class AttentionSeeking : MonoBehaviour {
     [SerializeField] private GameController gc;
 
     void Start () {
-        anim = GetComponent<Animator>();
+        stan = transform.GetChild(0).gameObject;
+        foreach (Transform child in stan.transform)
+        {
+            Debug.Log(child.name);
+            if (child.tag == spriteHeadTag)
+            {
+                vizTrack = child.gameObject.GetComponent<VisibilityTracker>();
+                break;
+            }
+        }
+
+
         shouldFollowCamera = false;
         moving = false;
         waitTimeElapsed = 0f;
@@ -39,7 +52,6 @@ public class AttentionSeeking : MonoBehaviour {
         camCon = cameraObj.GetComponent<CameraController>();
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         screenDivisions = gc.screenDivisions;
-        vizTrack = gameObject.GetComponent<VisibilityTracker>();
         if (vizTrack == null)
         {
             Debug.LogError("BRO WHY NO VIZ TRACKER???");
@@ -87,7 +99,7 @@ void Update()
                     else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
                     {
                         reachedDestination = true;
-                        anim.SetBool("isRunning", false);
+                        //anim.SetBool("isRunning", false);
                     }
                 }
 
@@ -105,15 +117,15 @@ void Update()
                 //}
                 //else
                 //{
-                    if (cam.transform.position.x > transform.position.x)
-                    {
-                        transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
-                    }
-                    else
-                    {
-                        transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
-                    }
-                    anim.SetBool("isRunning", true);
+                if (cam.transform.position.x > transform.position.x)
+                {
+                    transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                }
+                else
+                {
+                    transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                }
+                //anim.SetBool("isRunning", true);
                 //}
 
 
