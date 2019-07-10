@@ -6,7 +6,8 @@ public class StanBehaviour : MonoBehaviour
 {
     public enum StanStates { INITIAL_SITTING, NOTICING_PLAYER, GATHERING_TOWNIES, PROCLAIMING };
     public int groupCount;
-    public string spriteHeadTag;
+    public string spriteHeadTag, noticingAnimationClipName;
+    public int animationLayer;
 
     [SerializeField] private int collectedGroups;
     public AttentionSeeking cameraFollower;
@@ -14,10 +15,15 @@ public class StanBehaviour : MonoBehaviour
     private StanStates currentState;
     private Animator anim;
     private Vector3 proclaimingSpot;
-    private Vector3 positionLastFrame;
-    // Start is called before the first frame update
+    private Vector3 positionLastFrame, currentPosition;
+    private Vector3 lookRightScale, lookLeftScale;
+    private string m_ClipName;
+    private AnimatorClipInfo[] m_CurrentClipInfo;
+
     void Start()
     {
+        lookRightScale = transform.localScale;
+        lookLeftScale = new Vector3(-lookRightScale.x, lookRightScale.y, lookRightScale.z);
         foreach (Transform child in transform)
         {
             if (child.tag == spriteHeadTag)
@@ -28,16 +34,16 @@ public class StanBehaviour : MonoBehaviour
         }
 
 
-        positionLastFrame = transform.position;
+        positionLastFrame = transform.parent.position;
         proclaimingSpot = GameObject.Find("ProclaimFromHere").transform.position;
         collectedGroups = 0;
         anim = GetComponent<Animator>();
         
-        //cameraFollower = GetComponent<AttentionSeeking>();
+
         currentState = StanStates.INITIAL_SITTING;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (collectedGroups == 3)
@@ -52,12 +58,19 @@ public class StanBehaviour : MonoBehaviour
                 currentState = StanStates.GATHERING_TOWNIES;
                 //anim.SetBool("ntc", true);
                 //anim.SetBool("isRunning", false);
-                cameraFollower.StartFollowingCamera();
+                
             }
 
 
             if (currentState == StanStates.GATHERING_TOWNIES)
             {
+                m_CurrentClipInfo = anim.GetCurrentAnimatorClipInfo(animationLayer);
+                m_ClipName = m_CurrentClipInfo[0].clip.name;
+                if (m_ClipName == "idle2" )
+                {
+                    cameraFollower.StartFollowingCamera();
+                }
+
                 if (Input.GetKeyDown(","))
                 {
                     currentState = StanStates.PROCLAIMING;
@@ -92,15 +105,19 @@ public class StanBehaviour : MonoBehaviour
         {
             anim.SetBool("ntc", true);
             anim.SetBool("isRunning", false);
+            if (transform.parent.position != positionLastFrame)
+            {
+                anim.SetBool("isRunning", true);
+                
+                
+            }
+            else
+            {
+                anim.SetBool("isRunning", false);
+            }
         }
-        Vector3 currentPosition = transform.position;
-        if (currentPosition != positionLastFrame)
-        {
-            anim.SetBool("isRunning", true);
-        } else
-        {
-            anim.SetBool("isRunning", false);
-        }
-        positionLastFrame = transform.position;
+        transform.localScale = cameraFollower.lookDirection == 0 ? lookLeftScale : lookRightScale; 
+        positionLastFrame = transform.parent.position;
+
     }
 }

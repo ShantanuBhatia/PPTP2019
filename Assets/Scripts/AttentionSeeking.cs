@@ -16,9 +16,11 @@ public class AttentionSeeking : MonoBehaviour {
     public CameraController camCon;
     public Transform pedestal;
     public VisibilityTracker pedestalVizTrack;
-    public float pedestalPosMargin;
+    public float pedestalPosMargin, talkingDistance;
     public float DistFromCenter;
-    public string spriteHeadTag;
+    public string spriteHeadTag, townieTag;
+    public enum Direction { LEFT, RIGHT };
+    public Direction lookDirection;
 
     private GameObject stan;
     [SerializeField] private bool shouldFollowCamera;
@@ -26,12 +28,14 @@ public class AttentionSeeking : MonoBehaviour {
     private int screenDivisions;
     private Animator anim;
     [SerializeField] private VisibilityTracker vizTrack;
-    [SerializeField] private bool moving;
+    [SerializeField] private bool moving, townieOnScreen;
     [SerializeField] private float waitTimeElapsed;
     [SerializeField] private bool reachedDestination;
     [SerializeField] private GameController gc;
 
     void Start () {
+        townieOnScreen = false;
+        lookDirection = Direction.RIGHT;
         stan = transform.GetChild(0).gameObject;
         foreach (Transform child in stan.transform)
         {
@@ -81,58 +85,96 @@ void Update()
             }
             else
             {
-                if (pedestalVizTrack.checkVisible() && Mathf.Abs(transform.position.x - pedestal.position.x) > pedestalPosMargin)
+                townieOnScreen = camCon.ObjectOnScreenWithTag(townieTag);
+                currentScreenSector = vizTrack.getCurrentScreenSector();
+                if (townieOnScreen && DistanceToNearestTownie() > talkingDistance)
                 {
                     reachedDestination = false;
                     waitTimeElapsed += Time.deltaTime;
                 }
-                else
+                else if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
                 {
-                    currentScreenSector = vizTrack.getCurrentScreenSector();
-                    if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
-                    {
-                        reachedDestination = false;
-                        waitTimeElapsed += Time.deltaTime;
-                    }
-
-                    //else if (currentScreenSector.x > 0 && currentScreenSector.x < (screenDivisions - 1) && currentScreenSector.y > (0) && currentScreenSector.y < (screenDivisions - 1))
-                    else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
-                    {
-                        reachedDestination = true;
-                        //anim.SetBool("isRunning", false);
-                    }
+                    reachedDestination = false;
+                    waitTimeElapsed += Time.deltaTime;
                 }
-
-
+                else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
+                {
+                    reachedDestination = true;
+                }
             }
 
-
-
-            if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
+            if(!reachedDestination && camCon.ObjectOnScreenWithTag(townieTag))
             {
-                //if (pedestalVizTrack.checkVisible())
-                //{
-                //    if (pedestal.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
-                //    else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
-                //}
-                //else
-                //{
-                if (cam.transform.position.x > transform.position.x)
+                GameObject nearestTownie = NearestOnScreenTownie();
+                if (nearestTownie.transform.position.x > transform.position.x)
                 {
                     transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.RIGHT;
                 }
                 else
                 {
                     transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.LEFT;
                 }
-                //anim.SetBool("isRunning", true);
-                //}
-
-
+            }
+            else if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
+            {
+    
+                if (cam.transform.position.x > transform.position.x)
+                {
+                    transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.RIGHT;
+                }
+                else
+                {
+                    transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.LEFT;
+                }
             }
         }
 
 	}
+
+    private float DistanceToNearestTownie()
+    {
+        
+        List<GameObject> onScreenTownies = camCon.GetAllOnScreenWithTag(townieTag);
+        if (onScreenTownies.Count == 0)
+        {
+            return 0f;
+        }
+        float dist = Mathf.Abs(transform.position.x - onScreenTownies[0].transform.position.x);
+        foreach (GameObject townie in onScreenTownies)
+        {
+            if (Mathf.Abs(transform.position.x - townie.transform.position.x) < dist)
+            {
+                dist = Mathf.Abs(transform.position.x - townie.transform.position.x);
+            }
+        }
+        return dist;
+    }
+
+    private GameObject NearestOnScreenTownie()
+    {
+        
+        List<GameObject> onScreenTownies = camCon.GetAllOnScreenWithTag(townieTag);
+        if (onScreenTownies.Count == 0)
+        {
+            return null;
+        }
+        float dist = Mathf.Abs(transform.position.x - onScreenTownies[0].transform.position.x);
+        GameObject g = onScreenTownies[0];
+        foreach (GameObject townie in onScreenTownies)
+        {
+            if (Mathf.Abs(transform.position.x - townie.transform.position.x) < dist)
+            {
+                dist = Mathf.Abs(transform.position.x - townie.transform.position.x);
+                g = townie;
+            }
+        }
+
+        return g;
+    }
 
     public void StartFollowingCamera()
     {

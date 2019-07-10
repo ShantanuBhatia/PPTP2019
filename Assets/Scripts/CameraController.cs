@@ -87,6 +87,31 @@ public class CameraController : MonoBehaviour {
     public List<GameObject> getAllVisible() {
         return visibleObjects;
     }
+    
+    public bool ObjectOnScreenWithTag(string tag)
+    {
+        foreach(GameObject g in visibleObjects)
+        {
+            if(g.tag == tag)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<GameObject> GetAllOnScreenWithTag(string tag)
+    {
+        List<GameObject> allWithTag = new List<GameObject>();
+        foreach(GameObject g in visibleObjects)
+        {
+            if (g.tag == tag)
+            {
+                allWithTag.Add(g);
+            }
+        }
+        return allWithTag;
+    }
 
     private void zoomToLevel(zoomLevels targetZoomLvl)
     {
