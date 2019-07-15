@@ -53,6 +53,11 @@ public class CameraController : MonoBehaviour {
 			{
 				zoomToLevel(zoomLevels.WIDE);
 			}
+            if (Input.GetKeyDown("4"))
+            {
+                Debug.Log("Can see - " + listOfVisible());
+                Debug.Log(ObjectOnScreenWithTag("townie"));
+            }
 		}
         
     }
@@ -79,7 +84,7 @@ public class CameraController : MonoBehaviour {
     public string listOfVisible() {
         string visList = "";
         foreach (GameObject ob in visibleObjects) {
-            visList += ob.name + " ";
+            visList += ob.name + "(" + ob.transform.tag + ") ";
         }
         return visList;
     }
@@ -92,7 +97,7 @@ public class CameraController : MonoBehaviour {
     {
         foreach(GameObject g in visibleObjects)
         {
-            if(g.tag == tag)
+            if (g.tag == tag)
             {
                 return true;
             }

@@ -10,7 +10,7 @@ public class AttentionSeeking : MonoBehaviour {
      * If the pedestal is off screen, they will move to go to the center of the screen.
      */
     public float cameraFollowDelay;
-    public float movementSpeed;
+    public float baseMovementSpeed, desperationMultiplier;
     public GameObject cameraObj;
     public Camera cam;
     public CameraController camCon;
@@ -30,12 +30,14 @@ public class AttentionSeeking : MonoBehaviour {
     [SerializeField] private VisibilityTracker vizTrack;
     [SerializeField] private bool moving, townieOnScreen;
     [SerializeField] private float waitTimeElapsed;
-    [SerializeField] private bool reachedDestination;
+    [SerializeField] private bool reachedDestination, talkingToTownperson;
     [SerializeField] private GameController gc;
+    [SerializeField] private float movementSpeed;
 
     void Start () {
-
+        movementSpeed = baseMovementSpeed;
         townieOnScreen = false;
+        talkingToTownperson = false;
         lookDirection = Direction.RIGHT;
         stan = transform.GetChild(0).gameObject;
         foreach (Transform child in stan.transform)
@@ -74,9 +76,31 @@ void Update()
     {
         if (shouldFollowCamera)
         {
-            if (reachedDestination)
+            if (reachedDestination && camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
+            {
+                Debug.Log("ME HERE, ME TALK!");
+                talkingToTownperson = true;
+                GameObject nearestTownie = NearestOnScreenTownie();
+                if (nearestTownie.transform.position.x > transform.position.x)
+                {
+                    //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.RIGHT;
+                }
+                else
+                {
+                    //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.LEFT;
+                }
+                waitTimeElapsed = 0f;
+            }
+            else if (reachedDestination)
             {
                 waitTimeElapsed = 0f;
+                talkingToTownperson = false;
+            }
+            else
+            {
+                talkingToTownperson = false;
             }
 
             if (!vizTrack.checkVisible())
@@ -87,38 +111,24 @@ void Update()
             else
             {
                 townieOnScreen = camCon.ObjectOnScreenWithTag(townieTag);
+                if (townieOnScreen)
+                {
+                    Debug.Log("Can see townperson");
+                }
                 currentScreenSector = vizTrack.getCurrentScreenSector();
-                if (townieOnScreen && DistanceToNearestTownie() > talkingDistance)
-                {
-                    reachedDestination = false;
-                    waitTimeElapsed += Time.deltaTime;
-                }
-                else if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
-                {
-                    reachedDestination = false;
-                    waitTimeElapsed += Time.deltaTime;
-                }
-                else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
+
+
+                if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
                 {
                     reachedDestination = true;
                 }
-            }
-
-            if(!reachedDestination && camCon.ObjectOnScreenWithTag(townieTag))
-            {
-                GameObject nearestTownie = NearestOnScreenTownie();
-                if (nearestTownie.transform.position.x > transform.position.x)
-                {
-                    transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
-                    lookDirection = Direction.RIGHT;
-                }
                 else
                 {
-                    transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
-                    lookDirection = Direction.LEFT;
+                    reachedDestination = false;
                 }
+                
             }
-            else if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
+            if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
             {
     
                 if (cam.transform.position.x > transform.position.x)
@@ -132,6 +142,7 @@ void Update()
                     lookDirection = Direction.LEFT;
                 }
             }
+            
         }
 
 	}
@@ -184,5 +195,14 @@ void Update()
     public void StopFollowingCamera()
     {
         shouldFollowCamera = false;
+    }
+    public void UpdateDesperationMovementSpeed(float desp)
+    {
+        movementSpeed = baseMovementSpeed + desp * desperationMultiplier;
+    }
+
+    public bool getTalkStatus()
+    {
+        return talkingToTownperson;
     }
 }

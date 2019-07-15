@@ -85,7 +85,7 @@ public class StanBehaviour : MonoBehaviour
             transform.position = proclaimingSpot;
             //anim.SetBool("beingObserved", true);
         }
-
+        HandleDesperation();
         setAnimationFlags();
 
     }
@@ -116,6 +116,15 @@ public class StanBehaviour : MonoBehaviour
             {
                 anim.SetBool("isRunning", false);
             }
+            if (cameraFollower.getTalkStatus())
+            {
+                anim.SetBool("TalkingToTownies", true);
+            }
+            else
+            {
+                anim.SetBool("TalkingToTownies", false);
+            }
+
         }
         transform.localScale = cameraFollower.lookDirection == 0 ? lookLeftScale : lookRightScale; 
         positionLastFrame = transform.parent.position;
@@ -131,6 +140,7 @@ public class StanBehaviour : MonoBehaviour
                 currentState = StanStates.DESPERATE;
             }
             desperation += Time.deltaTime;
+            cameraFollower.UpdateDesperationMovementSpeed(desperation);
         }
     }
 

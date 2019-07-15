@@ -20,7 +20,7 @@ public class TownspersonController : MonoBehaviour
     private float stanConversationCount;
     private Vector3 lookRightScale, lookLeftScale;
     public int edgeSectorCount;
-    public enum State { SOLO_IGNORING_STAN, WILLING_TO_CONVERSE };
+    public enum State { SOLO_IGNORING_STAN, WILLING_TO_CONVERSE, TALKING_TO_STAN = 98, WALKING_TO_THEATER=99,  };
     public enum Direction { LEFT, RIGHT };
     public GameObject stan;
     public float conviction;
