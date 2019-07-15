@@ -72,10 +72,13 @@ public class AttentionSeeking : MonoBehaviour {
     }
 
 
-void Update()
-    {
-        if (shouldFollowCamera)
+    void Update() {
+        if (Input.GetKeyDown("9"))
         {
+            Debug.Log(DistanceToNearestTownie());
+        }
+        if (shouldFollowCamera)
+        { 
             if (reachedDestination && camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
             {
                 Debug.Log("ME HERE, ME TALK!");

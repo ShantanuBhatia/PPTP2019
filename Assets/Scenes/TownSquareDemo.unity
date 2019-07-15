@@ -4316,7 +4316,7 @@ PrefabInstance:
     - target: {fileID: 1223879623255795594, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 77.46
+      value: 74.98
       objectReference: {fileID: 0}
     - target: {fileID: 1223879623255795594, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
@@ -4381,7 +4381,7 @@ PrefabInstance:
     - target: {fileID: 1223879623255795597, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
       propertyPath: talkingDistance
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6109619100844848151, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
@@ -4486,7 +4486,7 @@ PrefabInstance:
     - target: {fileID: 794100389980393931, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 45.508003
+      value: 45.507004
       objectReference: {fileID: 0}
     - target: {fileID: 375796858256209728, guid: 578259ad70420374aa1a88b1da3d7a25,
         type: 3}
