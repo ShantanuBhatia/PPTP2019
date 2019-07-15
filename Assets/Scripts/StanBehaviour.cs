@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class StanBehaviour : MonoBehaviour
 {
-    public enum StanStates { INITIAL_SITTING, NOTICING_PLAYER, GATHERING_TOWNIES, PROCLAIMING };
+    public enum StanStates { INITIAL_SITTING, NOTICING_PLAYER, GATHERING_TOWNIES, PROCLAIMING, DESPERATE };
     public int groupCount;
     public string spriteHeadTag, noticingAnimationClipName;
     public int animationLayer;
-
+    public float desperation;
+    public float desperationCutoffSeconds;
     [SerializeField] private int collectedGroups;
     public AttentionSeeking cameraFollower;
     private VisibilityTracker vizTrack;
@@ -32,7 +33,7 @@ public class StanBehaviour : MonoBehaviour
                 break;
             }
         }
-
+        desperation = 0f;
 
         positionLastFrame = transform.parent.position;
         proclaimingSpot = GameObject.Find("ProclaimFromHere").transform.position;
@@ -120,4 +121,17 @@ public class StanBehaviour : MonoBehaviour
         positionLastFrame = transform.parent.position;
 
     }
+
+    public void HandleDesperation()
+    {
+        if (currentState != StanStates.DESPERATE)
+        {
+            if(desperation + Time.deltaTime > desperationCutoffSeconds)
+            {
+                currentState = StanStates.DESPERATE;
+            }
+            desperation += Time.deltaTime;
+        }
+    }
+
 }

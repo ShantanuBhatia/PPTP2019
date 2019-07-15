@@ -34,6 +34,7 @@ public class AttentionSeeking : MonoBehaviour {
     [SerializeField] private GameController gc;
 
     void Start () {
+
         townieOnScreen = false;
         lookDirection = Direction.RIGHT;
         stan = transform.GetChild(0).gameObject;
