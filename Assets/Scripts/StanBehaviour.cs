@@ -144,4 +144,8 @@ public class StanBehaviour : MonoBehaviour
         }
     }
 
+    public bool IsDesperate()
+    {
+        return (currentState == StanStates.DESPERATE);
+    }
 }

@@ -114,10 +114,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: FollowingStan
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
-    m_ConditionEvent: CurrentlyWalking
+    m_ConditionEvent: FinishedTalkingToStan
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102793962013106772}
@@ -366,9 +363,9 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
+  - {fileID: 1101688845712288618}
   - {fileID: 1101232907845626866}
   - {fileID: 1101788482841913366}
-  - {fileID: 1101688845712288618}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0

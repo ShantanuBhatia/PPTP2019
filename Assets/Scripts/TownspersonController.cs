@@ -73,7 +73,10 @@ public class TownspersonController : MonoBehaviour
         {
             WalkToAmphi();
         }
-        
+        if (state != State.TALKING_TO_STAN)
+        {
+            StopRisingConviction();
+        }
         SetAnimationFlags();
     }
 
@@ -124,6 +127,11 @@ public class TownspersonController : MonoBehaviour
         {
             anim.SetBool("TalkToStan", true);
         }
+        else if (state == State.WALKING_TO_THEATER)
+        {
+            anim.SetBool("FinishedTalkingToStan", true);
+        }
+
     }
 
     private void OutputTalkingState()
