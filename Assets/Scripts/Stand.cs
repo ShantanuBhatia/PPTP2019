@@ -16,11 +16,13 @@ public class Stand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.UpArrow)){
+        if(Input.GetKey("f")){
+        	Debug.Log("test1");
         	anim.SetBool("isstand",true);
         }
         else{
         	anim.SetBool("isstand",false);
+        	Debug.Log("tests");
         }
     }
 }

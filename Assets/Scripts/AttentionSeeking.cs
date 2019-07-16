@@ -78,33 +78,33 @@ public class AttentionSeeking : MonoBehaviour {
             Debug.Log(DistanceToNearestTownie());
         }
         if (shouldFollowCamera)
-        { 
-            if (reachedDestination && camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
-            {
-                Debug.Log("ME HERE, ME TALK!");
-                talkingToTownperson = true;
-                GameObject nearestTownie = NearestOnScreenTownie();
-                if (nearestTownie.transform.position.x > transform.position.x)
-                {
-                    //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
-                    lookDirection = Direction.RIGHT;
-                }
-                else
-                {
-                    //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
-                    lookDirection = Direction.LEFT;
-                }
-                waitTimeElapsed = 0f;
-            }
-            else if (reachedDestination)
+        {
+            if (reachedDestination)
             {
                 waitTimeElapsed = 0f;
                 talkingToTownperson = false;
+                //if (camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
+                //{
+                //    talkingToTownperson = true;
+                //    GameObject nearestTownie = NearestOnScreenTownie();
+                //    if (nearestTownie.transform.position.x > transform.position.x)
+                //    {
+                //        //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                //        lookDirection = Direction.RIGHT;
+                //    }
+                //    else
+                //    {
+                //        //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                //        lookDirection = Direction.LEFT;
+                //    }
+                //}
             }
             else
             {
                 talkingToTownperson = false;
             }
+            
+
 
             if (!vizTrack.checkVisible())
             {
@@ -145,7 +145,30 @@ public class AttentionSeeking : MonoBehaviour {
                     lookDirection = Direction.LEFT;
                 }
             }
-            
+            if (camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
+            {
+                talkingToTownperson = true;
+                GameObject nearestTownie = NearestOnScreenTownie();
+                nearestTownie.transform.parent.gameObject.GetComponent<TownspersonController>().StartRisingConviction();
+                if (nearestTownie.transform.position.x > transform.position.x)
+                {
+                    //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.RIGHT;
+                }
+                else
+                {
+                    //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    lookDirection = Direction.LEFT;
+                }
+            } else
+            {
+                GameObject nearestTownie = NearestOnScreenTownie();
+                if (nearestTownie)
+                {
+                    nearestTownie.transform.parent.gameObject.GetComponent<TownspersonController>().StopRisingConviction();
+                }
+                talkingToTownperson = false;
+            }
         }
 
 	}
