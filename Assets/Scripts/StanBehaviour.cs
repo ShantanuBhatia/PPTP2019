@@ -135,9 +135,10 @@ public class StanBehaviour : MonoBehaviour
     {
         if (currentState != StanStates.DESPERATE)
         {
-            if(desperation + Time.deltaTime > desperationCutoffSeconds)
+            if(desperation + Time.deltaTime > desperationCutoffSeconds/2)
             {
-                currentState = StanStates.DESPERATE;
+                //currentState = StanStates.DESPERATE;
+                anim.SetBool("isDesperate", true);
             }
             desperation += Time.deltaTime;
             cameraFollower.UpdateDesperationMovementSpeed(desperation);
