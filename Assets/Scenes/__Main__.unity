@@ -791,6 +791,7 @@ MonoBehaviour:
   stan: {fileID: 0}
   conviction: 0
   convictionSecondsNeeded: 0
+  spriteHeadTag: 
 --- !u!1 &883082767
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,6 +896,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetSortingLayer: Entity
   targetSortingOrder: 0
+--- !u!114 &884037966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884037960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40501e01085e43a98f1ba61e1adf88b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  edgeSectorCount: 0
+  stan: {fileID: 0}
+  conviction: 0
+  convictionSecondsNeeded: 0
+  spriteHeadTag: spriteHead
 --- !u!1 &1156460360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,6 +1281,7 @@ MonoBehaviour:
   stan: {fileID: 0}
   conviction: 0
   convictionSecondsNeeded: 0
+  spriteHeadTag: 
 --- !u!114 &1966931965
 MonoBehaviour:
   m_ObjectHideFlags: 0

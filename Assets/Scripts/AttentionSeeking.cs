@@ -10,27 +10,49 @@ public class AttentionSeeking : MonoBehaviour {
      * If the pedestal is off screen, they will move to go to the center of the screen.
      */
     public float cameraFollowDelay;
-    public float movementSpeed;
+    public float baseMovementSpeed, desperationMultiplier;
     public GameObject cameraObj;
     public Camera cam;
     public CameraController camCon;
     public Transform pedestal;
     public VisibilityTracker pedestalVizTrack;
-    public float pedestalPosMargin;
+    public float pedestalPosMargin, talkingDistance;
     public float DistFromCenter;
+    public string spriteHeadTag, townieTag;
+    public enum Direction { LEFT, RIGHT };
+    public Direction lookDirection;
 
-    private bool shouldFollowCamera;
+    private GameObject stan;
+    [SerializeField] private bool shouldFollowCamera;
     private Vector2 currentScreenSector;
     private int screenDivisions;
     private Animator anim;
     [SerializeField] private VisibilityTracker vizTrack;
-    [SerializeField] private bool moving;
+    [SerializeField] private StanBehaviour stanBehaviour;
+    [SerializeField] private bool moving, townieOnScreen;
     [SerializeField] private float waitTimeElapsed;
-    [SerializeField] private bool reachedDestination;
+    [SerializeField] private bool reachedDestination, talkingToTownperson;
     [SerializeField] private GameController gc;
+    [SerializeField] private float movementSpeed;
 
     void Start () {
-        anim = GetComponent<Animator>();
+        movementSpeed = baseMovementSpeed;
+        townieOnScreen = false;
+        talkingToTownperson = false;
+        lookDirection = Direction.RIGHT;
+        stan = transform.GetChild(0).gameObject;
+        stanBehaviour = stan.GetComponent<StanBehaviour>();
+        foreach (Transform child in stan.transform)
+        {
+            Debug.Log(child.name);
+            if (child.tag == spriteHeadTag)
+            {
+                vizTrack = child.gameObject.GetComponent<VisibilityTracker>();
+                break;
+            }
+        }
+
+
         shouldFollowCamera = false;
         moving = false;
         waitTimeElapsed = 0f;
@@ -39,7 +61,6 @@ public class AttentionSeeking : MonoBehaviour {
         camCon = cameraObj.GetComponent<CameraController>();
         gc = GameObject.Find("GameController").GetComponent<GameController>();
         screenDivisions = gc.screenDivisions;
-        vizTrack = gameObject.GetComponent<VisibilityTracker>();
         if (vizTrack == null)
         {
             Debug.LogError("BRO WHY NO VIZ TRACKER???");
@@ -53,74 +74,154 @@ public class AttentionSeeking : MonoBehaviour {
     }
 
 
-void Update()
-    {
-        if (shouldFollowCamera)
+    void Update() {
+        if (Input.GetKeyDown("9"))
         {
-            if (reachedDestination)
+            Debug.Log(DistanceToNearestTownie());
+        }
+        if (!stanBehaviour.IsDesperate())
+        {
+            if (shouldFollowCamera)
             {
-                waitTimeElapsed = 0f;
-            }
+                if (reachedDestination)
+                {
+                    waitTimeElapsed = 0f;
+                    talkingToTownperson = false;
+                    //if (camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
+                    //{
+                    //    talkingToTownperson = true;
+                    //    GameObject nearestTownie = NearestOnScreenTownie();
+                    //    if (nearestTownie.transform.position.x > transform.position.x)
+                    //    {
+                    //        //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                    //        lookDirection = Direction.RIGHT;
+                    //    }
+                    //    else
+                    //    {
+                    //        //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                    //        lookDirection = Direction.LEFT;
+                    //    }
+                    //}
+                }
+                else
+                {
+                    talkingToTownperson = false;
+                }
 
-            if (!vizTrack.checkVisible())
-            {
-                reachedDestination = false;
-                waitTimeElapsed += Time.deltaTime;
-            }
-            else
-            {
-                if (pedestalVizTrack.checkVisible() && Mathf.Abs(transform.position.x - pedestal.position.x) > pedestalPosMargin)
+
+
+                if (!vizTrack.checkVisible())
                 {
                     reachedDestination = false;
                     waitTimeElapsed += Time.deltaTime;
                 }
                 else
                 {
-                    currentScreenSector = vizTrack.getCurrentScreenSector();
-                    if (currentScreenSector.x.Equals(0) || currentScreenSector.x.Equals(screenDivisions - 1) || currentScreenSector.y.Equals(0) || currentScreenSector.y.Equals(screenDivisions - 1))
+                    townieOnScreen = camCon.ObjectOnScreenWithTag(townieTag);
+                    if (townieOnScreen)
                     {
-                        reachedDestination = false;
-                        waitTimeElapsed += Time.deltaTime;
+                        Debug.Log("Can see townperson");
                     }
+                    currentScreenSector = vizTrack.getCurrentScreenSector();
 
-                    //else if (currentScreenSector.x > 0 && currentScreenSector.x < (screenDivisions - 1) && currentScreenSector.y > (0) && currentScreenSector.y < (screenDivisions - 1))
-                    else if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
+
+                    if (Mathf.Abs(transform.position.x - cam.transform.position.x) < DistFromCenter)
                     {
                         reachedDestination = true;
-                        anim.SetBool("isRunning", false);
                     }
+                    else
+                    {
+                        reachedDestination = false;
+                    }
+
                 }
+                if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
+                {
 
-
-            }
-
-
-
-            if (!reachedDestination && waitTimeElapsed > cameraFollowDelay)
-            {
-                //if (pedestalVizTrack.checkVisible())
-                //{
-                //    if (pedestal.position.x > transform.position.x) { transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f); }
-                //    else { transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f); }
-                //}
-                //else
-                //{
                     if (cam.transform.position.x > transform.position.x)
                     {
                         transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                        lookDirection = Direction.RIGHT;
                     }
                     else
                     {
                         transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                        lookDirection = Direction.LEFT;
                     }
-                    anim.SetBool("isRunning", true);
-                //}
+                }
+                if (camCon.ObjectOnScreenWithTag(townieTag) && DistanceToNearestTownie() < talkingDistance)
+                {
+                    talkingToTownperson = true;
+                    GameObject nearestTownie = NearestOnScreenTownie();
+                    nearestTownie.transform.parent.gameObject.GetComponent<TownspersonController>().StartRisingConviction();
+                    if (nearestTownie.transform.position.x > transform.position.x)
+                    {
+                        //transform.Translate(movementSpeed * Time.deltaTime, 0f, 0f);
+                        lookDirection = Direction.RIGHT;
+                    }
+                    else
+                    {
+                        //transform.Translate(-movementSpeed * Time.deltaTime, 0f, 0f);
+                        lookDirection = Direction.LEFT;
+                    }
+                }
+                else
+                {
+                    GameObject nearestTownie = NearestOnScreenTownie();
+                    if (nearestTownie)
+                    {
+                        nearestTownie.transform.parent.gameObject.GetComponent<TownspersonController>().StopRisingConviction();
+                    }
+                    talkingToTownperson = false;
+                }
+            }
+        }
+        else if (stanBehaviour.IsDesperate())
+        {
 
+        }
+	}
 
+    private float DistanceToNearestTownie()
+    {
+        
+        List<GameObject> onScreenTownies = camCon.GetAllOnScreenWithTag(townieTag);
+        if (onScreenTownies.Count == 0)
+        {
+            return 0f;
+        }
+        float dist = Mathf.Abs(transform.position.x - onScreenTownies[0].transform.position.x);
+        foreach (GameObject townie in onScreenTownies)
+        {
+            if (Mathf.Abs(transform.position.x - townie.transform.position.x) < dist)
+            {
+                dist = Mathf.Abs(transform.position.x - townie.transform.position.x);
+            }
+        }
+        return dist;
+    }
+
+    private GameObject NearestOnScreenTownie()
+    {
+        
+        List<GameObject> onScreenTownies = camCon.GetAllOnScreenWithTag(townieTag);
+        if (onScreenTownies.Count == 0)
+        {
+            return null;
+        }
+        float dist = Mathf.Abs(transform.position.x - onScreenTownies[0].transform.position.x);
+        GameObject g = onScreenTownies[0];
+        foreach (GameObject townie in onScreenTownies)
+        {
+            if (Mathf.Abs(transform.position.x - townie.transform.position.x) < dist)
+            {
+                dist = Mathf.Abs(transform.position.x - townie.transform.position.x);
+                g = townie;
             }
         }
 
-	}
+        return g;
+    }
 
     public void StartFollowingCamera()
     {
@@ -129,5 +230,14 @@ void Update()
     public void StopFollowingCamera()
     {
         shouldFollowCamera = false;
+    }
+    public void UpdateDesperationMovementSpeed(float desp)
+    {
+        movementSpeed = baseMovementSpeed + desp * desperationMultiplier;
+    }
+
+    public bool getTalkStatus()
+    {
+        return talkingToTownperson;
     }
 }

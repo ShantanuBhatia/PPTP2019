@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 
     // XY camera movement, plus a simple zoom in-zoom out
-    public enum zoomLevels { CLOSEUP = 10, MIDRANGE = 10, WIDE = 10 } ;
+    public enum zoomLevels { CLOSEUP = 12, MIDRANGE = 12, WIDE = 12 } ;
     public float xMin, xMax, yMin, yMax;
     private zoomLevels zoomLevel;
     public float maxSpeed;
@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour {
 		visibleObjects = new List<GameObject>();
         cam = GetComponent<Camera>();
         zoomToLevel(zoomLevels.MIDRANGE);
-		gc = GameObject.Find("GameController").GetComponent<GameController>();
+        gc = GameObject.Find("GameController").GetComponent<GameController>();
 		verticalScrollLock = gc.GetVerticalScrollLock();
 
 	}
@@ -28,7 +28,8 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		if (gc.CameraMovementAllowed())
 		{
-			float xTranslation = Mathf.Clamp(Input.GetAxis("Horizontal"), -maxSpeed, maxSpeed);
+            Debug.Log("GOT HERE");
+            float xTranslation = Mathf.Clamp(Input.GetAxis("Horizontal"), -maxSpeed, maxSpeed);
 			float yTranslation = 0f;
 			if (!verticalScrollLock || zoomLevel == zoomLevels.CLOSEUP)
 			{
@@ -53,6 +54,11 @@ public class CameraController : MonoBehaviour {
 			{
 				zoomToLevel(zoomLevels.WIDE);
 			}
+            if (Input.GetKeyDown("4"))
+            {
+                Debug.Log("Can see - " + listOfVisible());
+                Debug.Log(ObjectOnScreenWithTag("townie"));
+            }
 		}
         
     }
@@ -79,13 +85,38 @@ public class CameraController : MonoBehaviour {
     public string listOfVisible() {
         string visList = "";
         foreach (GameObject ob in visibleObjects) {
-            visList += ob.name + " ";
+            visList += ob.name + "(" + ob.transform.tag + ") ";
         }
         return visList;
     }
 
     public List<GameObject> getAllVisible() {
         return visibleObjects;
+    }
+    
+    public bool ObjectOnScreenWithTag(string tag)
+    {
+        foreach(GameObject g in visibleObjects)
+        {
+            if (g.tag == tag)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<GameObject> GetAllOnScreenWithTag(string tag)
+    {
+        List<GameObject> allWithTag = new List<GameObject>();
+        foreach(GameObject g in visibleObjects)
+        {
+            if (g.tag == tag)
+            {
+                allWithTag.Add(g);
+            }
+        }
+        return allWithTag;
     }
 
     private void zoomToLevel(zoomLevels targetZoomLvl)
@@ -103,7 +134,7 @@ public class CameraController : MonoBehaviour {
 		//{
 		//    cam.orthographicSize = 32;
 		//}
-		cam.transform.position = new Vector3(cam.transform.position.x, 0f, cam.transform.position.z);
+		//cam.transform.position = new Vector3(cam.transform.position.x, 0f, cam.transform.position.z);
         cam.orthographicSize = (int) targetZoomLvl;
 
     }
